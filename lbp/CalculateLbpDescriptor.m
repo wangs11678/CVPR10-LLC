@@ -60,16 +60,18 @@ for ii = 1:length(subfolders),
                 [im_h, im_w] = size(I);
             end;
 
+            fprintf('Processing %s: wid %d, hgt %d\n', ...
+                     frames(jj).name, im_w, im_h);
             % find LBP descriptors
             mapping=getmapping(8,'u2');
             lbpArr=lbp(I,1,8,mapping,'h'); %LBP histogram in (8,1) neighborhood using uniform patterns
             
-            fea = lbpArr';
+            lbpfea = lbpArr';
             
             [pdir, fname] = fileparts(frames(jj).name);                        
             fpath = fullfile(rt_data_dir, subname, [fname, '.mat']);
             
-            save(fpath, 'fea');
+            save(fpath, 'lbpfea');
             database.path = [database.path, fpath];
         end;    
     end;
