@@ -40,20 +40,24 @@ addpath('Liblinear/matlab');        % we use Liblinear package, you need
 %data_dir = 'data/sift/SelfBuildFlower3';       % directory for saving SIFT descriptors
 %fea_dir = 'features/sift/SelfBuildFlower3';    % directory for saving final image features
 
+img_dir = 'image/flower10';       % directory for the image database                             
+data_dir = 'data/sift/flower10';       % directory for saving SIFT descriptors
+fea_dir = 'features/sift/flower10';    % directory for saving final image features
 
-img_dir = 'image/highAngleShot10';       % directory for the image database                             
-data_dir = 'data/sift/highAngleShot10';       % directory for saving SIFT descriptors
-fea_dir = 'features/sift/highAngleShot10';    % directory for saving final image features
+%hog_dir = 'data/hog/flower10';
 
 % -------------------------------------------------------------------------
 % extract SIFT descriptors, we use Prof. Lazebnik's matlab codes in this package
 % change the parameters for SIFT extraction inside function 'extr_sift'
 % extr_sift(img_dir, data_dir);
 
+exist_data_sift = false;
+if(exist_data_sift)
+    extr_sift('F:\project\matlab\CVPR10-LLC\image\flower10','F:\project\matlab\CVPR10-LLC\data\sift\flower10');
+end
 % -------------------------------------------------------------------------
 % retrieve the directory of the database and load the codebook
 database = retr_database_dir(data_dir);
-%fprintf('database: %d...\n', database.nclass);
 
 if isempty(database),
     error('Data directory error!');
@@ -66,8 +70,8 @@ nCodebook = size(B, 2);              % size of the codebook  nCodebookÎª¾ØÕóBµÄÁ
 
 % -------------------------------------------------------------------------
 % extract image features
-
 dFea = sum(nCodebook*pyramid.^2);
+%dFea = 68160;
 nFea = length(database.path);
 
 fdatabase = struct;
@@ -88,8 +92,11 @@ for iter1 = 1:nFea,
     [rtpath, fname] = fileparts(fpath);
     feaPath = fullfile(fea_dir, num2str(flabel), [fname '.mat']);
     
+    %hogPath = fullfile(hog_dir, num2str(flabel), [fname '.mat']);
+    %load(hogPath);
  
     fea = LLC_pooling(feaSet, B, pyramid, knn);
+    %fea = [fea; hogfea];  %sift¾­¹ýcodingºóÓëhogÌØÕ÷ÈÚºÏ
     label = database.label(iter1);
 
     if ~isdir(fullfile(fea_dir, num2str(flabel))),
@@ -143,7 +150,6 @@ for ii = 1:nRounds,
     options = ['-c ' num2str(c)];
     model = train(double(tr_label), sparse(tr_fea), options);
     clear tr_fea;
-    %save model;
     
     % load the testing features
     ts_num = length(ts_idx);

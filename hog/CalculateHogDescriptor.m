@@ -15,7 +15,6 @@ function [database] = CalculateHogDescriptor(rt_img_dir, rt_data_dir, maxImSize)
 disp('Extracting HOG features...');
 subfolders = dir(rt_img_dir);
 
-
 database = [];
 
 database.imnum = 0; % total image number of the database
@@ -57,39 +56,25 @@ for ii = 1:length(subfolders),
             
             if max(im_h, im_w) > maxImSize,
                 I = imresize(I, maxImSize/max(im_h, im_w), 'bicubic');
-                %I = imresize(300,300);
+                %I = imresize(I,[300,300]);
                 [im_h, im_w] = size(I);
             end;
 
-            % make grid sampling SIFT descriptors
-%             remX = mod(im_w-patchSize,gridSpacing);
-%             offsetX = floor(remX/2)+1;
-%             remY = mod(im_h-patchSize,gridSpacing);
-%             offsetY = floor(remY/2)+1;
-%     
-%             [gridX,gridY] = meshgrid(offsetX:gridSpacing:im_w-patchSize+1, offsetY:gridSpacing:im_h-patchSize+1);
-%             
-%             fprintf('Processing %s: wid %d, hgt %d, grid size: %d x %d, %d patches\n', ...
-%                      frames(jj).name, im_w, im_h, size(gridX, 2), size(gridX, 1), numel(gridX));
+            % make grid sampling HOG descriptors
+            
+            fprintf('Processing %s: wid %d, hgt %d\n', ...
+                     frames(jj).name, im_w, im_h);
                  
             % find HOG descriptors
             hogArr = hog_feature_vector(I);
             
-            fea = hogArr';
-%             hogLens = [hogtLens; hoglen];
-%             
-%             feaSet.feaArr = hogArr';
-%             feaSet.x = gridX(:) + patchSize/2 - 0.5;
-%             feaSet.y = gridY(:) + patchSize/2 - 0.5;
-%             feaSet.width = im_w;
-%             feaSet.height = im_h;
-            
+            hogfea = hogArr';
+
             [pdir, fname] = fileparts(frames(jj).name);                        
             fpath = fullfile(rt_data_dir, subname, [fname, '.mat']);
             
-            save(fpath, 'fea');
+            save(fpath, 'hogfea');
             database.path = [database.path, fpath];
         end;    
     end;
 end;
-% lenStat = hist(hogLens, 100);
