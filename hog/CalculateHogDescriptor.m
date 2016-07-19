@@ -65,7 +65,8 @@ for ii = 1:length(subfolders),
             fprintf('Processing %s: wid %d, hgt %d\n', ...
                      frames(jj).name, im_w, im_h);
                  
-            % find HOG descriptors
+            % find HOG descriptors  
+            
             hogArr = hog_feature_vector(I);
             
             hogfea = hogArr';

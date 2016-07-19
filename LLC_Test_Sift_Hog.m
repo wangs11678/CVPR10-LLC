@@ -25,6 +25,7 @@ mem_block = 3000;                   % maxmum number of testing features loaded e
 
 % -------------------------------------------------------------------------
 % set path
+%addpath('PCA');
 addpath('Liblinear/matlab');        % we use Liblinear package, you need 
                                     % download and compile the matlab codes
 
@@ -32,6 +33,7 @@ img_dir = 'image/flower10';            % directory for the image database
 data_dir = 'data/sift/flower10';       % directory for saving SIFT descriptors
 fea_dir = 'features/sift/flower10';    % directory for saving final image features
 
+hog_dir = 'data/hog/flower10';
 
 % -------------------------------------------------------------------------
 % extract SIFT descriptors, we use Prof. Lazebnik's matlab codes in this package
@@ -45,7 +47,7 @@ if(noexist_data_sift)
 end
 % -------------------------------------------------------------------------
 
-noexist_fea_sift = true;
+noexist_fea_sift = false;
 %如果features不存在，load data进行coding产生fea
 if(noexist_fea_sift)  
     % retrieve the directory of the database and load the codebook
@@ -59,7 +61,8 @@ if(noexist_fea_sift)
 
     % -------------------------------------------------------------------------
     % extract image features
-    dFea = sum(nCodebook*pyramid.^2);
+    %dFea = sum(nCodebook*pyramid.^2);
+    dFea = sum(nCodebook*pyramid.^2)+floor(((300-16)/8+1)).^2*4*9;
     nFea = length(database.path);
     fdatabase = struct;
     fdatabase.path = cell(nFea, 1);         % path for each image feature
@@ -79,7 +82,15 @@ if(noexist_fea_sift)
         [rtpath, fname] = fileparts(fpath);
         feaPath = fullfile(fea_dir, num2str(flabel), [fname '.mat']);
 
+        if(flabel<10)
+            hogPath = fullfile(hog_dir, ['0' num2str(flabel)], [fname '.mat']);
+        else
+            hogPath = fullfile(hog_dir, num2str(flabel), [fname '.mat']);
+        end
+        load(hogPath);
+
         fea = LLC_pooling(feaSet, B, pyramid, knn);
+        fea = [fea; hogfea];  %sift经过coding后与hog特征融合
         label = database.label(iter1);
 
         if ~isdir(fullfile(fea_dir, num2str(flabel))),
@@ -98,11 +109,13 @@ else
     Bpath = ['dictionary/Caltech101_SIFT_Kmeans_1024.mat'];
     load(Bpath);
     nCodebook = size(B, 2);              % size of the codebook  nCodebook为矩阵B的列数1024
+
     
     % -------------------------------------------------------------------------
-    dFea = sum(nCodebook*pyramid.^2);
+    %dFea = sum(nCodebook*pyramid.^2);
+    dFea = sum(nCodebook*pyramid.^2)+floor(((300-16)/8+1)).^2*4*9;
     nFea = length(fdatabase.path);
-    for iter1 = 1:nFea,   
+    for iter1 = 1:nFea,         
         feaPath = fdatabase.path{iter1};
         load(feaPath);
         label = fdatabase.label(iter1);
@@ -146,6 +159,9 @@ for ii = 1:nRounds,
         tr_fea(jj, :) = fea';
         tr_label(jj) = label;
     end
+    
+    %[eigvector,eigvalue] = PCA(tr_fea,4);
+    %Y = tr_fea*eigvector;
     
     options = ['-c ' num2str(c)];
     model = train(double(tr_label), sparse(tr_fea), options);
