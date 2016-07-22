@@ -19,7 +19,7 @@ c = 10;                             % regularization parameter for linear SVM
                                     % in Liblinear package
 
 nRounds = 10;                       % number of random test on the dataset
-tr_num  = 80;                       % training examples per category
+tr_num  = 200;                       % training examples per category
 mem_block = 3000;                   % maxmum number of testing features loaded each time  
 
 
@@ -28,9 +28,9 @@ mem_block = 3000;                   % maxmum number of testing features loaded e
 addpath('Liblinear/matlab');        % we use Liblinear package, you need 
                                     % download and compile the matlab codes
 
-img_dir = 'image/flower10';            % directory for the image database                             
-data_dir = 'data/sift/flower10';       % directory for saving SIFT descriptors
-fea_dir = 'features/sift/flower10';    % directory for saving final image features
+img_dir = 'image/flower3';            % directory for the image database                             
+data_dir = 'data/sift/flower3';       % directory for saving SIFT descriptors
+fea_dir = 'features/sift/flower3';    % directory for saving final image features
 
 
 % -------------------------------------------------------------------------
@@ -41,11 +41,11 @@ fea_dir = 'features/sift/flower10';    % directory for saving final image featur
 noexist_data_sift = false;
 %如果data不存在，提取sift描述子
 if(noexist_data_sift)
-    extr_sift('F:\project\matlab\CVPR10-LLC\image\flower10','F:\project\matlab\CVPR10-LLC\data\sift\flower10');
+    extr_sift('F:\project\matlab\CVPR10-LLC\image\flower3','F:\project\matlab\CVPR10-LLC\data\sift\flower3');
 end
 % -------------------------------------------------------------------------
 
-noexist_fea_sift = true;
+noexist_fea_sift = false;
 %如果features不存在，load data进行coding产生fea
 if(noexist_fea_sift)  
     % retrieve the directory of the database and load the codebook

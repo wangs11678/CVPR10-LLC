@@ -1,12 +1,7 @@
 % =========================================================================
-% An example code for the algorithm proposed in
-%
-%   Jinjun Wang, Jianchao Yang, Kai Yu, Fengjun Lv, Thomas Huang, and Yihong Gong.
-%   "Locality-constrained Linear Coding for Image Classification", CVPR 2010.
-%
-%
-% Written by Jianchao Yang @ IFP UIUC
-% May, 2010.
+% 例子：
+% 将提取的Sift特征经过coding+pooling后与提取的hog特征融合，
+% 用linear SVM进行分类
 % =========================================================================
 
 clear all; close all; clc;

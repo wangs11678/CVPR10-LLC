@@ -1,3 +1,7 @@
+% =========================================================================
+% 例子：
+% hog+svm进行分类
+% =========================================================================
 clear all;
 close all; 
 clc;
@@ -6,19 +10,19 @@ clc;
 % parameter setting
 c = 10;                             % regularization parameter for linear SVM in Liblinear package                             
 nRounds = 10;                       % number of random test on the dataset
-tr_num  = 80;                       % training examples per category
+tr_num  = 200;                       % training examples per category
 
 % -------------------------------------------------------------------------
 % set path
 addpath('Liblinear/matlab');        % we use Liblinear package, you need download and compile the matlab codes
-img_dir = 'image/flower10';         % directory for the image database                             
-data_dir = 'data/hog/flower10';     % directory for saving HOG descriptors
+img_dir = 'image/flower3';         % directory for the image database                             
+data_dir = 'data/hog/flower3';     % directory for saving HOG descriptors
 
 % -------------------------------------------------------------------------
 % extract HOG descriptors
-exist_data_hog = false;
+exist_data_hog = true;
 if(exist_data_hog)
-    extr_hog('F:\project\matlab\CVPR10-LLC\image\flower10','F:\project\matlab\CVPR10-LLC\data\hog\flower10');
+    extr_hog('F:\project\matlab\CVPR10-LLC\image\flower3','F:\project\matlab\CVPR10-LLC\data\hog\flower3');
 end
 % -------------------------------------------------------------------------
 
